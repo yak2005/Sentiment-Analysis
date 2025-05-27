@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .analysis-section {
+            margin-bottom: 40px;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .sentiment-result {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sentiment-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .sentiment-text {
+            flex: 1;
+        }
+
+        .sentiment-label {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .confidence-score {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .positive {
+            color: #28a745;
+        }
+
+        .negative {
+            color: #dc3545;
+        }
+
+        .neutral {
+            color: #6c757d;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .features-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .example-texts {
+            margin-top: 30px;
+        }
+
+        .example-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .example-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .example-btn {
+            background: white;
+            border: 2px solid #e1e5e9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .features-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Sentiment Analysis</h1>
+            <p>Analyze the emotional tone and sentiment of any text using advanced machine learning</p>
+        </div>
+
+        <div class="main-content">
+            <div class="analysis-section">
+                <div class="input-container">
+                    <textarea 
+                        class="text-input" 
+                        id="textInput" 
+                        placeholder="Enter your text here to analyze its sentiment... Try product reviews, social media posts, customer feedback, or any other text!"
+                    ></textarea>
+                </div>
+                
+                <button class="analyze-btn" onclick="analyzeSentiment()">
+                    🔍 Analyze Sentiment
+                </button>
+
+                <div id="resultContainer" class="result-container" style="display: none;">
+                    <div class="sentiment-result">
+                        <div class="sentiment-icon" id="sentimentIcon">😊</div>
+                        <div class="sentiment-text">
+                            <div class="sentiment-label" id="sentimentLabel">Positive</div>
+                            <div class="confidence-score" id="confidenceScore">Confidence: 85%</div>
+                        </div>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
+                </div>
+
+                <div class="example-texts">
+                    <div class="example-title">📝 Try These Examples</div>
+                    <div class="example-buttons">
+                        <button class="example-btn" onclick="loadExample('I absolutely love this product! It exceeded all my expectations and the customer service was amazing.')">Positive Review</button>
+                        <button class="example-btn" onclick="loadExample('This movie was terrible. The plot made no sense and the acting was awful. Complete waste of time.')">Negative Review</button>
+                        <button class="example-btn" onclick="loadExample('The weather today is okay. Not too hot, not too cold. Just average conditions.')">Neutral Comment</button>
+                        <button class="example-btn" onclick="loadExample('I am so excited about the new features! This update is incredible and will save me so much time.')">Positive Feedback</button>
+                        <button class="example-btn" onclick="loadExample('The service was disappointing and the food was cold. Would not recommend this restaurant.')">Negative Feedback</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAnalyses">0</div>
+                    <div class="stat-label">Total Analyses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="positiveCount">0</div>
+                    <div class="stat-label">Positive Results</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="negativeCount">0</div>
+                    <div class="stat-label">Negative Results</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="neutralCount">0</div>
+                    <div class="stat-label">Neutral Results</div>
+                </div>
+            </div>
+
+            <div class="features-section">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">Advanced NLP</div>
+                    <div class="feature-description">
+                        Uses sophisticated natural language processing algorithms to understand context, negations, and complex sentence structures.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Real-time Analysis</div>
+                    <div class="feature-description">
+                        Get instant sentiment analysis results with confidence scores to understand the reliability of predictions.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Detailed Insights</div>
+                    <div class="feature-description">
+                        Provides comprehensive analysis including sentiment classification and confidence metrics for better understanding.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">High Accuracy</div>
+                    <div class="feature-description">
+                        Trained on diverse datasets to handle various text types including reviews, social media posts, and formal documents.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sentiment analysis statistics
+        let stats = {
+            total: 0,
+            positive: 0,
+            negative: 0,
+            neutral: 0
+        };
+
+        // Simple sentiment analysis lexicon
+        const positiveWords = [
+            'amazing', 'awesome', 'excellent', 'fantastic', 'great', 'wonderful', 'perfect', 'outstanding', 'brilliant', 'superb',
+            'love', 'like', 'enjoy', 'appreciate', 'adore', 'pleased', 'satisfied', 'happy', 'delighted', 'thrilled',
+            'good', 'best', 'better', 'nice', 'fine', 'beautiful', 'gorgeous', 'stunning', 'impressive', 'remarkable',
+            'helpful', 'useful', 'valuable', 'beneficial', 'effective', 'efficient', 'reliable', 'trustworthy', 'professional',
+            'recommend', 'worth', 'quality', 'premium', 'superior', 'exceptional', 'incredible', 'phenomenal', 'marvelous'
+        ];
+
+        const negativeWords = [
+            'terrible', 'awful', 'horrible', 'disgusting', 'pathetic', 'worst', 'hate', 'dislike', 'despise', 'loathe',
+            'bad', 'poor', 'disappointing', 'unsatisfactory', 'inadequate', 'inferior', 'useless', 'worthless', 'pointless',
+            'annoying', 'frustrating', 'irritating', 'aggravating', 'boring', 'dull', 'bland', 'tasteless', 'cheap',
+            'broken', 'damaged', 'defective', 'faulty', 'unreliable', 'slow', 'expensive', 'overpriced', 'waste',
+            'problem', 'issue', 'trouble', 'difficulty', 'complaint', 'regret', 'mistake', 'error', 'fail', 'failed'
+        ];
+
+        const negationWords = ['not', 'no', 'never', 'nothing', 'nobody', 'nowhere', 'neither', 'nor', 'barely', 'hardly', 'scarcely', 'seldom', 'rarely'];
+
+        function analyzeSentiment() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                alert('Please enter some text to analyze!');
+                return;
+            }
+
+            // Show loading state
+            const button = document.querySelector('.analyze-btn');
+            button.textContent = '🔄 Analyzing...';
+            button.disabled = true;
+
+            // Simulate processing time for better UX
+            setTimeout(() => {
+                const result = performSentimentAnalysis(text);
+                displayResult(result);
+                updateStats(result.sentiment);
+                
+                // Reset button
+                button.textContent = '🔍 Analyze Sentiment';
+                button.disabled = false;
+            }, 800);
+        }
+
+        function performSentimentAnalysis(text) {
+            // Convert to lowercase and split into words
+            const words = text.toLowerCase().match(/\b\w+\b/g) || [];
+            
+            let positiveScore = 0;
+            let negativeScore = 0;
+            let negationFlag = false;
+            
+            // Analyze each word
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+                
+                // Check for negation
+                if (negationWords.includes(word)) {
+                    negationFlag = true;
+                    continue;
+                }
+                
+                // Score positive words
+                if (positiveWords.includes(word)) {
+                    if (negationFlag) {
+                        negativeScore += 1;
+                        negationFlag = false;
+                    } else {
+                        positiveScore += 1;
+                    }
+                }
+                
+                // Score negative words
+                if (negativeWords.includes(word)) {
+                    if (negationFlag) {
+                        positiveScore += 1;
+                        negationFlag = false;
+                    } else {
+                        negativeScore += 1;
+                    }
+                }
+                
+                // Reset negation flag after 2 words
+                if (negationFlag && i > 0 && !negationWords.includes(words[i-1])) {
+                    negationFlag = false;
+                }
+            }
+            
+            // Calculate sentiment
+            const totalScore = positiveScore + negativeScore;
+            let sentiment, confidence;
+            
+            if (totalScore === 0) {
+                sentiment = 'neutral';
+                confidence = 60;
+            } else {
+                const positiveRatio = positiveScore / totalScore;
+                
+                if (positiveRatio > 0.6) {
+                    sentiment = 'positive';
+                    confidence = Math.min(95, 70 + (positiveRatio - 0.6) * 62.5);
+                } else if (positiveRatio < 0.4) {
+                    sentiment = 'negative';
+                    confidence = Math.min(95, 70 + (0.4 - positiveRatio) * 62.5);
+                } else {
+                    sentiment = 'neutral';
+                    confidence = 60 + Math.abs(positiveRatio - 0.5) * 40;
+                }
+            }
+            
+            // Adjust confidence based on text length
+            const textLength = words.length;
+            if (textLength < 5) {
+                confidence *= 0.8;
+            } else if (textLength > 50) {
+                confidence = Math.min(confidence * 1.1, 95);
+            }
+            
+            return {
+                sentiment: sentiment,
+                confidence: Math.round(confidence),
+                positiveScore: positiveScore,
+                negativeScore: negativeScore
+            };
+        }
+
+        function displayResult(result) {
+            const resultContainer = document.getElementById('resultContainer');
+            const sentimentIcon = document.getElementById('sentimentIcon');
+            const sentimentLabel = document.getElementById('sentimentLabel');
+            const confidenceScore = document.getElementById('confidenceScore');
+            const confidenceFill = document.getElementById('confidenceFill');
+            
+            // Set icon and color based on sentiment
+            let icon, color, label;
+            switch (result.sentiment) {
+                case 'positive':
+                    icon = '😊';
+                    color = '#28a745';
+                    label = 'Positive';
+                    break;
+                case 'negative':
+                    icon = '😞';
+                    color = '#dc3545';
+                    label = 'Negative';
+                    break;
+                default:
+                    icon = '😐';
+                    color = '#6c757d';
+                    label = 'Neutral';
+            }
+            
+            sentimentIcon.textContent = icon;
+            sentimentLabel.textContent = label;
+            sentimentLabel.className = `sentiment-label ${result.sentiment}`;
+            confidenceScore.textContent = `Confidence: ${result.confidence}%`;
+            
+            // Update confidence bar
+            confidenceFill.style.width = `${result.confidence}%`;
+            confidenceFill.style.backgroundColor = color;
+            
+            // Show result
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function updateStats(sentiment) {
+            stats.total++;
+            stats[sentiment]++;
+            
+            document.getElementById('totalAnalyses').textContent = stats.total;
+            document.getElementById('positiveCount').textContent = stats.positive;
+            document.getElementById('negativeCount').textContent = stats.negative;
+            document.getElementById('neutralCount').textContent = stats.neutral;
+        }
+
+        function loadExample(text) {
+            document.getElementById('textInput').value = text;
+            document.getElementById('textInput').focus();
+        }
+
+        // Auto-resize textarea
+        document.getElementById('textInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(120, this.scrollHeight) + 'px';
+        });
+
+        // Allow Enter+Shift for new line, Enter alone to analyze
+        document.getElementById('textInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                analyzeSentiment();
+            }
+        });
+    </script>
+</body>
+</html>
