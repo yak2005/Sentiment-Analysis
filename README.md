@@ -18,9 +18,20 @@ This project demonstrates sentiment analysis using two approaches:
 ![Image](https://github.com/user-attachments/assets/1f88fa83-c82f-4256-81b8-29d46c691757)
 
 ### Python Version
+![Image](https://github.com/user-attachments/assets/33db3df2-35de-417c-9ac3-faa002a58c65)
 
 ## Technologies Used
-*(Add technology details here, as shown above)*
+### Web Version
+- HTML
+- CSS
+- JavaScript
+
+### Python Version
+-Python 3.x
+-Libraries:
+-re
+-json
+-typing
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
