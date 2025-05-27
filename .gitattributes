@@ -3,4 +3,4 @@
 *.git push
 *.css linguist-vendored
 *.py linguist-language=Python
-*.html linguist-vendored
+
