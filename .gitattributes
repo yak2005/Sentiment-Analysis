@@ -1,5 +1,5 @@
 *.git add .gitattributes
 *.git commit -m "Add .gitattributes to prioritize Python"
 *.git push
-
+*.css linguist-vendored
 
