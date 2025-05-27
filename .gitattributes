@@ -5,4 +5,5 @@
 *.py linguist-language=Python
 
 *.js linguist-vendored
+*.json linguist-vendored
 
