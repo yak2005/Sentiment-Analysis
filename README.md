@@ -5,7 +5,7 @@ A sentiment analysis project implemented in HTML, CSS, JavaScript, and Python.
 
 This project demonstrates sentiment analysis using two approaches:
 1. Web-based implementation with HTML, CSS, and JavaScript.
-2. Python-based implementation with libraries like NLTK and Scikit-learn.
+2. Python-based implementation with libraries like re json and typing.
 
 ## Features
 - Analyze text sentiment (positive, negative, or neutral).
