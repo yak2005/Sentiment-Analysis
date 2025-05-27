@@ -14,7 +14,7 @@ This project demonstrates sentiment analysis using two approaches:
   - Python CLI for advanced processing.
 
 ## Screenshots
-
+![Image](https://github.com/user-attachments/assets/1f88fa83-c82f-4256-81b8-29d46c691757)
 
 ## Technologies Used
 *(Add technology details here, as shown above)*
