@@ -1,4 +1,5 @@
-*.py linguist-language=Python
-*.html linguist-vendored
-*.css linguist-vendored
+*.git add .gitattributes
+*.git commit -m "Add .gitattributes to prioritize Python"
+*.git push
+
 
